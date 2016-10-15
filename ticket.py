@@ -1,4 +1,6 @@
 import requests
+import config
+
 
 class Ticket:
     def __init__(self):
@@ -63,7 +65,17 @@ class Ticket:
         }
 
     def save(self):
-        pass
+        header = {'X-API-Key': config.api['key']}
+        try:
+            z = requests.post(url=config.api['url'], headers=header, json=self.to_json())
+            print(z.status_code)
+            print(z.content)
+            if not z.status_code==201:
+                return False
+            else:
+                return z.content.decode('utf-8')
+        except Exception as e:
+            return False
 
 
 if __name__ == "__main__":
@@ -72,5 +84,5 @@ if __name__ == "__main__":
     x.number = "89634131153"
     x.title = "Сериализация"
     x.desc = "Десериалиация"
-    x.sender="skeeph05@gmail.com"
+    x.sender = "skeeph05@gmail.com"
     print(x.to_json())

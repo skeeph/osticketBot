@@ -17,7 +17,7 @@ def send_welcome(message):
     Добрый день. Как вас зовут?
     """)
     tickets[message.chat.id] = Ticket()
-    tickets[message.chat.id].sender = "%d@%d" % (message.from_user.id, message.chat.id)
+    tickets[message.chat.id].sender = "skeeph05@gmail.com"  # % (message.from_user.id, message.chat.id)
     bot.register_next_step_handler(msg, process_name_step)
 
 
@@ -39,7 +39,13 @@ def process_name_step(message):
 def process_number_step(message):
     try:
         chat_id = message.chat.id
-        tickets[message.chat.id].number = message.text
+        try:
+            phone = int(message.text)
+        except ValueError as e:
+            msg = bot.reply_to(message, 'Неправильное введен номер. Пожалуйста, введите только цифры')
+            bot.register_next_step_handler(msg, process_number_step)
+            return
+        tickets[message.chat.id].number = phone
         msg = bot.reply_to(message, 'В чем проблема?(Введите пожалуйста суть)??')
         bot.register_next_step_handler(msg, process_title_step)
     except Exception as e:
@@ -60,7 +66,13 @@ def process_problem_step(message):
     try:
         chat_id = message.chat.id
         tickets[message.chat.id].desc = message.text
-        bot.reply_to(message, str(tickets[message.chat.id].to_json()))
+        s = tickets[message.chat.id].save()
+        print(tickets[message.chat.id].to_json())
+        if s:
+            msg = bot.reply_to(message, 'Ваша заявка зарегистрирована под номером %s' % s)
+        else:
+            msg = bot.reply_to(message,
+                               'К сожалению произошла ошибка добавления заявки. Пожалуйста, попробуйте еще раз. %s' % s)
     except Exception as e:
         bot.reply_to(message, 'oooops')
 

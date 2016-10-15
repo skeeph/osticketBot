@@ -12,3 +12,9 @@ WEBHOOK_SSL_PRIV = os.path.join(current_dir, 'cert', 'key.pem')
 
 WEBHOOK_URL_BASE = "https://%s" % WEBHOOK_HOST
 WEBHOOK_URL_PATH = "/%s/" % TOKEN
+
+
+api = {
+    'url': 'http://helpdesk.loc/api/http.php/tickets.json',
+    'key': 'CBA40BBAA39ABC0403912A3E1F0BC62C'
+}
