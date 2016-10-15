@@ -1,0 +1,2 @@
+pyTelegramBotAPI>=2.1.7
+flask>=0.11.1
