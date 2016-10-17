@@ -1,6 +1,6 @@
 import os
 
-TOKEN = '297653041:AAHQK07SDpToKPeLIrtKY9c5u6x3uCj2eZE'
+TOKEN = '285550392:AAGnNRGmWDrxrYlPE9VgNPBe6VV0wxyjs9I'
 BOTAN = 'gbWYaN9qPVJUlBDy-TXhpoEt3vMa59WN'
 WEBHOOK_HOST = 'xfood.atrier.ru'
 WEBHOOK_PORT = 443  # 443, 80, 88 or 8443 (port need to be 'open')
@@ -15,7 +15,7 @@ WEBHOOK_URL_PATH = "/%s/" % TOKEN
 
 
 api = {
-    'ticket': 'http://xfood.atrier.ru/api/http.php/tickets.json',
-    'users': 'http://xfood.atrier.ru/api/http.php/users.json',
-    'key': 'F56723128816F16B3679EBF3178546D0'
+    'ticket': 'http://service.atrier.ru/api/http.php/tickets.json',
+    'users': 'http://service.atrier.ru/api/http.php/users.json',
+    'key': '99A730889574730FA7247DF813721102'
 }

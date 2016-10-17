@@ -52,7 +52,7 @@ def process_number_step(message):
             bot.register_next_step_handler(msg, process_number_step)
             return
         tickets[message.chat.id].number = phone
-        msg = bot.reply_to(message, 'В чем проблема?(Введите пожалуйста суть)??')
+        msg = bot.reply_to(message, 'В чем проблема?(кратко)')
         bot.register_next_step_handler(msg, process_title_step)
     except Exception as e:
         bot.reply_to(message, 'oooops')
@@ -62,7 +62,7 @@ def process_title_step(message):
     try:
         chat_id = message.chat.id
         tickets[message.chat.id].title = message.text
-        msg = bot.reply_to(message, 'Опищите проблему подробнее')
+        msg = bot.reply_to(message, 'Опищите проблему(Подробно)')
         bot.register_next_step_handler(msg, process_problem_step)
     except Exception as e:
         bot.reply_to(message, 'oooops')
@@ -74,14 +74,14 @@ def process_problem_step(message):
         tickets[message.chat.id].desc = message.text
         s = tickets[message.chat.id].save()
         print(tickets[message.chat.id].to_json())
-        if s:
-            msg = bot.reply_to(message, 'Ваша заявка зарегистрирована под номером %s' % s)
+        if s[0]:
+            msg = bot.reply_to(message, 'Ваша заявка зарегистрирована под номером %s' % s[1])
         else:
             msg = bot.reply_to(message,
-                               'К сожалению произошла ошибка добавления заявки. Пожалуйста, попробуйте еще раз. %s' % s)
+                               'К сожалению произошла ошибка добавления заявки. Пожалуйста, попробуйте еще раз. %s' % s[1])
         del tickets[message.chat.id]
     except Exception as e:
-        bot.reply_to(message, 'oooops')
+        bot.reply_to(message, type(e))
 
 
 bot.remove_webhook()
