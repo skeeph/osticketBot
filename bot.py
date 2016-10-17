@@ -6,6 +6,9 @@
 
 from botInit import *
 import telebot.types as types
+from ticket import *
+
+tickets = {}
 
 
 # Empty webserver index, return nothing, just http 200
@@ -28,32 +31,47 @@ def webhook():
 
 
 # Handle '/start' and '/help'
-@bot.message_handler(commands=['help', 'start', 'проблема'])
+@bot.message_handler(commands=['problem'])
 def send_welcome(message):
     msg = bot.reply_to(message, """\
     Добрый день. Как вас зовут?
     """)
+    tickets[message.chat.id] = Ticket()
+    tickets[message.chat.id].sender = "{0}/{1}@telegram.com".format(message.from_user.id, message.chat.id)
     bot.register_next_step_handler(msg, process_name_step)
 
 
 def process_name_step(message):
-    markup = types.ReplyKeyboardMarkup()
-    items = [types.KeyboardButton(i) for i in range(10)]
-    markup.add(*items)
-
     try:
         chat_id = message.chat.id
-        name = message.text
-        msg = bot.reply_to(message, 'Введите ваш номер телефона?', reply_markup=markup)
+        x = tickets[message.chat.id]
+        x.name = message.text
+        msg = bot.reply_to(message, 'Назовите ваше заведение?')
+        bot.register_next_step_handler(msg, process_place_step)
+    except Exception as e:
+        bot.reply_to(message, type(e))
+
+
+def process_place_step(message):
+    try:
+        x = tickets[message.chat.id]
+        x.name += "@{0}".format(message.text)
+        msg = bot.reply_to(message, 'Введите ваш номер телефона?')
         bot.register_next_step_handler(msg, process_number_step)
     except Exception as e:
-        bot.reply_to(message, 'oooops')
+        bot.reply_to(message, type(e))
 
 
 def process_number_step(message):
     try:
         chat_id = message.chat.id
-        name = message.text
+        try:
+            phone = int(message.text)
+        except ValueError as e:
+            msg = bot.reply_to(message, 'Неправильное введен номер. Пожалуйста, введите только цифры')
+            bot.register_next_step_handler(msg, process_number_step)
+            return
+        tickets[message.chat.id].number = phone
         msg = bot.reply_to(message, 'В чем проблема?(Введите пожалуйста суть)??')
         bot.register_next_step_handler(msg, process_title_step)
     except Exception as e:
@@ -63,7 +81,7 @@ def process_number_step(message):
 def process_title_step(message):
     try:
         chat_id = message.chat.id
-        name = message.text
+        tickets[message.chat.id].title = message.text
         msg = bot.reply_to(message, 'Опищите проблему подробнее')
         bot.register_next_step_handler(msg, process_problem_step)
     except Exception as e:
@@ -73,11 +91,21 @@ def process_title_step(message):
 def process_problem_step(message):
     try:
         chat_id = message.chat.id
-        name = message.text
+        tickets[message.chat.id].desc = message.text
+        s = tickets[message.chat.id].save()
+        print(tickets[message.chat.id].to_json())
+        if s:
+            msg = bot.reply_to(message, 'Ваша заявка зарегистрирована под номером %s' % s)
+        else:
+            msg = bot.reply_to(message,
+                               'К сожалению произошла ошибка добавления заявки. Пожалуйста, попробуйте еще раз. %s' % s)
+        del tickets[message.chat.id]
     except Exception as e:
         bot.reply_to(message, 'oooops')
 
 
+bot.remove_webhook()
+bot.polling()
 @app.before_first_request
 def add_hook():
     # Remove webhook, it fails sometimes the set if there is a previous webhook

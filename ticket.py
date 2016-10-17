@@ -71,11 +71,11 @@ class Ticket:
             print(requests.post(url=config.api['users'], headers=header, json=u).content)
             z = requests.post(url=config.api['ticket'], headers=header, json=self.to_json())
             if not z.status_code == 201:
-                return [False, z.content.decode('utf-8')]
+                return False
             else:
                 return z.content.decode('utf-8')
         except Exception as e:
-            return [False, type(e)]
+            return type(e)
 
 
 if __name__ == "__main__":

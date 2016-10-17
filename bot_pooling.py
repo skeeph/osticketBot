@@ -11,7 +11,7 @@ bot = telebot.TeleBot(config.TOKEN)
 tickets = {}
 
 
-@bot.message_handler(commands=['problem'])
+@bot.message_handler(commands=['problem','atrier'])
 def send_welcome(message):
     msg = bot.reply_to(message, """\
     Добрый день. Как вас зовут?
@@ -74,11 +74,11 @@ def process_problem_step(message):
         tickets[message.chat.id].desc = message.text
         s = tickets[message.chat.id].save()
         print(tickets[message.chat.id].to_json())
-        if s[0]:
-            msg = bot.reply_to(message, 'Ваша заявка зарегистрирована под номером %s' % s[1])
+        if s:
+            msg = bot.reply_to(message, 'Ваша заявка зарегистрирована под номером %s' % s)
         else:
             msg = bot.reply_to(message,
-                               'К сожалению произошла ошибка добавления заявки. Пожалуйста, попробуйте еще раз. %s' % s[1])
+                               'К сожалению произошла ошибка добавления заявки. Пожалуйста, попробуйте еще раз. %s' % s)
         del tickets[message.chat.id]
     except Exception as e:
         bot.reply_to(message, type(e))
