@@ -17,7 +17,7 @@ def send_welcome(message):
     Добрый день. Как вас зовут?
     """)
     tickets[message.chat.id] = Ticket()
-    tickets[message.chat.id].sender = "skeeph05@gmail.com"  # % (message.from_user.id, message.chat.id)
+    tickets[message.chat.id].sender = "{0}/{1}@telegram.com".format(message.from_user.id, message.chat.id)
     bot.register_next_step_handler(msg, process_name_step)
 
 
