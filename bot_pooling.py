@@ -22,14 +22,20 @@ def send_welcome(message):
 
 
 def process_name_step(message):
-    markup = types.ReplyKeyboardMarkup()
-    items = [types.KeyboardButton(str(i)) for i in range(10)]
-    markup.add(*items)
-
     try:
         chat_id = message.chat.id
         x = tickets[message.chat.id]
         x.name = message.text
+        msg = bot.reply_to(message, 'Назовите ваше заведение?')
+        bot.register_next_step_handler(msg, process_place_step)
+    except Exception as e:
+        bot.reply_to(message, type(e))
+
+
+def process_place_step(message):
+    try:
+        x = tickets[message.chat.id]
+        x.name += "@{0}".format(message.text)
         msg = bot.reply_to(message, 'Введите ваш номер телефона?')
         bot.register_next_step_handler(msg, process_number_step)
     except Exception as e:
