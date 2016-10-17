@@ -17,7 +17,7 @@ def send_welcome(message):
     Добрый день. Как вас зовут?
     """)
     tickets[message.chat.id] = Ticket()
-    tickets[message.chat.id].sender = "skeeph05@gmail.com"  # % (message.from_user.id, message.chat.id)
+    tickets[message.chat.id].sender = "{0}/{1}@telegram.com".format(message.from_user.id, message.chat.id)
     bot.register_next_step_handler(msg, process_name_step)
 
 
@@ -79,6 +79,7 @@ def process_problem_step(message):
         else:
             msg = bot.reply_to(message,
                                'К сожалению произошла ошибка добавления заявки. Пожалуйста, попробуйте еще раз. %s' % s)
+        del tickets[message.chat.id]
     except Exception as e:
         bot.reply_to(message, 'oooops')
 

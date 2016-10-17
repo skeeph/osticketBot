@@ -15,6 +15,7 @@ WEBHOOK_URL_PATH = "/%s/" % TOKEN
 
 
 api = {
-    'url': 'http://helpdesk.loc/api/http.php/tickets.json',
-    'key': 'CBA40BBAA39ABC0403912A3E1F0BC62C'
+    'ticket': 'http://xfood.atrier.ru/api/http.php/tickets.json',
+    'users': 'http://xfood.atrier.ru/api/http.php/users.json',
+    'key': 'F56723128816F16B3679EBF3178546D0'
 }

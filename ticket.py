@@ -67,10 +67,10 @@ class Ticket:
     def save(self):
         header = {'X-API-Key': config.api['key']}
         try:
-            z = requests.post(url=config.api['url'], headers=header, json=self.to_json())
-            print(z.status_code)
-            print(z.content)
-            if not z.status_code==201:
+            u = {'email': self.sender, 'name': self.name, 'phone': self.number}
+            print(requests.post(url=config.api['users'], headers=header, json=u).content)
+            z = requests.post(url=config.api['ticket'], headers=header, json=self.to_json())
+            if not z.status_code == 201:
                 return False
             else:
                 return z.content.decode('utf-8')
