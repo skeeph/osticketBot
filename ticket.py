@@ -1,5 +1,6 @@
 import requests
 import config
+import json
 
 
 class Ticket:
@@ -9,6 +10,7 @@ class Ticket:
         self._title = None
         self._desc = None
         self._sender = None
+        self.attachments = dict()
 
     @property
     def name(self):
@@ -61,7 +63,7 @@ class Ticket:
             "subject": self.title,
             "ip": "127.0.0.1",
             "message": self.desc,
-            "attachments": []
+            "attachments": json.dumps(self.attachments)
         }
 
     def save(self):

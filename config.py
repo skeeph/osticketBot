@@ -1,6 +1,6 @@
 import os
 
-TOKEN = '285550392:AAGnNRGmWDrxrYlPE9VgNPBe6VV0wxyjs9I'
+TOKEN = '267173649:AAEIuNujPW7zcjJE_ucz9UfDLDMpQfihEEE'
 BOTAN = 'gbWYaN9qPVJUlBDy-TXhpoEt3vMa59WN'
 WEBHOOK_HOST = 'xfood.atrier.ru'
 WEBHOOK_PORT = 443  # 443, 80, 88 or 8443 (port need to be 'open')
