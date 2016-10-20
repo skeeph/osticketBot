@@ -10,7 +10,7 @@ class Ticket:
         self._title = None
         self._desc = None
         self._sender = None
-        self.attachments = dict()
+        self.attachments = list()
 
     @property
     def name(self):
@@ -62,16 +62,20 @@ class Ticket:
             "phone": self.number,
             "subject": self.title,
             "ip": "127.0.0.1",
-            "message": self.desc,
-            "attachments": json.dumps(self.attachments)
+            "message": self.desc
         }
 
     def save(self):
         header = {'X-API-Key': config.api['key']}
+        t = self.to_json()
         try:
-            u = {'email': self.sender, 'name': self.name, 'phone': self.number}
-            print(requests.post(url=config.api['users'], headers=header, json=u).content)
-            z = requests.post(url=config.api['ticket'], headers=header, json=self.to_json())
+            # u = {'email': self.sender, 'name': self.name, 'phone': self.number}
+            # print(requests.post(url=config.api['users'], headers=header, json=u).content)
+            if len(self.attachments) == 0:
+                del self.attachments
+            else:
+                t["attachments"]=self.attachments
+            z = requests.post(url=config.api['ticket'], headers=header, json=t)
             if not z.status_code == 201:
                 return False
             else:

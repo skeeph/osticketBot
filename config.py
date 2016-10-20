@@ -15,7 +15,7 @@ WEBHOOK_URL_PATH = "/%s/" % TOKEN
 
 
 api = {
-    'ticket': 'http://helpdesk.loc/api/http.php/tickets.json',
+    'ticket': 'http://help.loc/api/http.php/tickets.json',
     'users': 'http://helpdesk.loc/api/http.php/users.json',
-    'key': 'CBA40BBAA39ABC0403912A3E1F0BC62C'
+    'key': '2A573A2E48A01F4B36925C7C72879434'
 }

@@ -106,11 +106,17 @@ def ask_attach_step(message):
 def process_attachments_step(message):
     try:
         text = message.text
-        # TODO Сохранение прикрепленных
+
         msg = bot.reply_to(message, 'Вы хотите прикрепить еще файлы к заявке?', reply_markup=markup)
         bot.register_next_step_handler(msg, ask_attach_step)
         if message.video is not None:
-            pass
+            video = message.video
+            file_info = bot.get_file(video.file_id)
+            url = 'https://api.telegram.org/file/bot{0}/{1}'.format(config.TOKEN, file_info.file_path)
+            file = requests.get(url)
+            b6str = base64.b64encode(file.content)
+            x = {file_info.file_path: "data:video/mp4;base64," + b6str.decode("utf-8")}
+            tickets[message.chat.id].attachments.append(x)
 
         if message.photo is not None:
             photo = message.photo[3]
@@ -118,13 +124,25 @@ def process_attachments_step(message):
             url = 'https://api.telegram.org/file/bot{0}/{1}'.format(config.TOKEN, file_info.file_path)
             file = requests.get(url)
             b6str = base64.b64encode(file.content)
-            tickets[message.chat.id].attachments[file_info.file_path] = "data:image/jpg;base64," + b6str.decode("utf-8")
+            x = {file_info.file_path: "data:image/jpg;base64," + b6str.decode("utf-8")}
+            tickets[message.chat.id].attachments.append(x)
 
         if message.voice is not None:
-            pass
+            voice = message.voice
+            file_info = bot.get_file(voice.file_id)
+            url = 'https://api.telegram.org/file/bot{0}/{1}'.format(config.TOKEN, file_info.file_path)
+            file = requests.get(url)
+            b6str = base64.b64encode(file.content)
+            x = {file_info.file_path: "data:" + voice.mime_type + ";base64," + b6str.decode("utf-8")}
+            tickets[message.chat.id].attachments.append(x)
 
         if message.document is not None:
-            pass
+            file_info = bot.get_file(message.document.file_id)
+            url = 'https://api.telegram.org/file/bot{0}/{1}'.format(config.TOKEN, file_info.file_path)
+            file = requests.get(url)
+            b6str = base64.b64encode(file.content)
+            x = {message.document.file_name: "data:" + message.document.mime_type + ";base64," + b6str.decode("utf-8")}
+            tickets[message.chat.id].attachments.append(x)
 
         if message.audio is not None:
             pass
@@ -138,6 +156,13 @@ def process_attachments_step(message):
 def start_file(message):
     try:
         chat_id = message.chat.id
+        x = Ticket()
+        x.name = "Хабиб"
+        x.number = "89634131153"
+        x.title = "Сериализация"
+        x.desc = "Десериалиация"
+        x.sender = "skeeph05@gmail.com"
+        tickets[chat_id] = x
         msg = bot.reply_to(message, 'Вы хотите прикрепить файлы к заявке?', reply_markup=markup)
         bot.register_next_step_handler(msg, ask_attach_step)
     except Exception as e:
