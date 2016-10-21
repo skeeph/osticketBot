@@ -69,8 +69,8 @@ class Ticket:
         header = {'X-API-Key': config.api['key']}
         t = self.to_json()
         try:
-            # u = {'email': self.sender, 'name': self.name, 'phone': self.number}
-            # print(requests.post(url=config.api['users'], headers=header, json=u).content)
+            u = {'email': self.sender, 'name': self.name, 'phone': self.number}
+            print(requests.post(url=config.api['users'], headers=header, json=u).content)
             if len(self.attachments) == 0:
                 del self.attachments
             else:
