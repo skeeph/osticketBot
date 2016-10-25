@@ -1,6 +1,8 @@
 # This is a simple echo bot using the decorator mechanism.
 # It echoes any incoming text messages.
+import sys
 import requests
+import requests.exceptions
 import base64
 import telebot
 from telebot import types
@@ -15,13 +17,14 @@ tickets = {}
 
 
 @bot.message_handler(commands=['problem', 'atrier'])
-def send_welcome(message):
+def send_welcome(message: types.Message):
     msg = bot.reply_to(message, """\
-    Добрый день. Как вас зовут?
+    Добрый день. Назовите ваше заведение?
     """)
     tickets[message.chat.id] = Ticket()
     tickets[message.chat.id].sender = "{0}/{1}@telegram.com".format(message.from_user.id, message.chat.id)
-    bot.register_next_step_handler(msg, process_name_step)
+    tickets[message.chat.id].name = message.chat.first_name + " " + message.chat.last_name
+    bot.register_next_step_handler(msg, process_place_step)
 
 
 def process_name_step(message):
@@ -181,4 +184,16 @@ def process_finish_step(message):
 
 
 bot.remove_webhook()
-bot.polling()
+
+
+def main():
+    try:
+        bot.polling()
+    except requests.exceptions.ReadTimeout:
+        main()
+    except KeyboardInterrupt:
+        sys.exit(0)
+
+
+if __name__ == "__main__":
+    main()
